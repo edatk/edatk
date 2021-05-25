@@ -1,2 +1,2 @@
 # edatk
-Python Exploratory Data Analysis Toolkit
+Python Exploratory Data Analysis Toolkit.
