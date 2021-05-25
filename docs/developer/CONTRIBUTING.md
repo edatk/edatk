@@ -45,6 +45,8 @@
     ```
 1. Resolve any conflicts from above step, accepting incoming change from upstream where possible. If any conflicts resulted, you may need to re-merge.
     ```
+    git add -A
+    git commit -m "my changes-fixing merge conflicts"
     git merge main
     ```
 1. Push your changes to your repo.
