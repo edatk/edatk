@@ -49,6 +49,10 @@
     git commit -m "my changes-fixing merge conflicts"
     git merge main
     ```
+1. View files changed to ensure as expected.
+    ```
+    git diff --name-only main my_changes
+    ```
 1. Push your changes to your repo.
     ```
     git push origin main
