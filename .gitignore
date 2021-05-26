@@ -134,3 +134,4 @@ dmypy.json
 
 # Ignore top level test file
 _test.py
+testing.py

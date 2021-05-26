@@ -29,6 +29,8 @@
     ```
     git checkout -b "my_changes"
     ```
+1. Make code changes.
+1. Test your code, perform testing as needed and then also run the [test suite](../../test/TESTING.md).
 1. Do your development work on this branch and commit your changes.
     ```
     git status

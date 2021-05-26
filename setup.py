@@ -6,7 +6,8 @@ with open("README.md", "r") as readme_file:
 
 
 requirements = [
-    'seaborn>=0.11'
+    'seaborn>=0.11',
+    'numpy>=1.20'
 ]
 
 setup(
