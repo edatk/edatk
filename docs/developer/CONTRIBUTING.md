@@ -56,4 +56,4 @@
     ```
     git push origin main
     ```
-1. Go to your github repo in your browser and submit a pull request describing your changes. 
+1. Go to your github repo in your browser and submit a pull request describing your changes. Leave your branch open until merged. After that point, you are free to fetch to resync if you're working on additional changes, delete your personal forked repo, etc.
