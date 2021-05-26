@@ -56,6 +56,6 @@
     ```
 1. Push your changes to your repo.
     ```
-    git push origin main
+    git push origin my_changes
     ```
 1. Go to your github repo in your browser and submit a pull request describing your changes. Leave your branch open until merged. After that point, you are free to fetch to resync if you're working on additional changes, delete your personal forked repo, etc.
