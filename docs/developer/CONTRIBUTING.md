@@ -29,6 +29,8 @@
     ```
     git checkout -b "my_changes"
     ```
+1. Make code changes.
+1. Test your code, perform testing as needed and then also run the [test suite](../../test/TESTING.md).
 1. Do your development work on this branch and commit your changes.
     ```
     git status
@@ -54,6 +56,6 @@
     ```
 1. Push your changes to your repo.
     ```
-    git push origin main
+    git push origin my_changes
     ```
-1. Go to your github repo in your browser and submit a pull request describing your changes. 
+1. Go to your github repo in your browser and submit a pull request describing your changes. Leave your branch open until merged. After that point, you are free to fetch to resync if you're working on additional changes, delete your personal forked repo, etc.
