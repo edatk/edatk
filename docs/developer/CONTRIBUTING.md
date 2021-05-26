@@ -47,7 +47,6 @@
     ```
     git add -A
     git commit -m "my changes-fixing merge conflicts"
-    git merge main
     ```
 1. View files changed to ensure as expected.
     ```
