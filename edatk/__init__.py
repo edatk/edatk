@@ -1,6 +1,8 @@
-from ._core import get_test_dataset
+from ._single_variable._auto_eda import auto_eda_single_column
 
 
 __all__ = [
-    "get_test_dataset"
+    "auto_eda_single_column"
 ]
+
+__version__ = '0.0.2'
