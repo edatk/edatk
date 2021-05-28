@@ -1,3 +1,4 @@
+from numpy import e
 import pytest
 import pandas as pd
 
@@ -7,7 +8,8 @@ import edatk._single_variable._auto_eda as auto_col
 
 def _get_test_df():
     SAMPLE_LIST = [5.1,4.9,4.7,4.6,5.0, None]
-    return pd.DataFrame(SAMPLE_LIST, columns=['metric'])
+    SAMPLE_CAT = ['a', 'b', 'c', 'd', 'e', 'a']
+    return pd.DataFrame(list(zip(SAMPLE_LIST,SAMPLE_CAT)), columns=['metric', 'category'])
 
 
 def test_mean():
@@ -46,3 +48,33 @@ def test_missing():
 
 def test_75th_percentile():
     assert round(sst._op_quantile(_get_test_df(),'metric',0.75),4) == 5.0
+
+
+def test_distinct_count():
+    assert int(sst._op_distinct_count(_get_test_df(), 'category')) == 5
+
+
+def test_data_type():
+    assert sst._op_get_column_data_type(_get_test_df(), 'category') == 'string'
+    assert sst._op_get_column_data_type(_get_test_df(), 'metric') == 'numeric'
+
+
+def test_auto_column_text_eda_one():
+    try:
+        auto_col.auto_eda_columns(_get_test_df())
+    except Exception as e:
+        pytest.fail(f'Unexpected error...')
+
+
+def test_auto_column_text_eda_two():
+    try:
+        auto_col.auto_eda_columns(_get_test_df(), 'metric')
+    except Exception as e:
+        pytest.fail(f'Unexpected error...')
+
+
+def test_auto_column_text_eda_three():
+    try:
+        auto_col.auto_eda_columns(_get_test_df(), ['metric', 'category'])
+    except Exception as e:
+        pytest.fail(f'Unexpected error...')
