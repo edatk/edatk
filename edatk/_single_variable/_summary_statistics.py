@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from pandas.api.types import is_string_dtype, is_numeric_dtype
 
 
 def _op_mean(df, column_name):
@@ -118,3 +119,33 @@ def _op_quantile(df, column_name, quantile_value=0.75):
     """
     return np.nanquantile(df[column_name],quantile_value)
 
+
+def _op_distinct_count(df, column_name):
+    """Return the distinct count given a dataframe and column name string. Ignores NAs.
+
+    Args:
+        df (pandas dataframe): input dataframe
+        column_name (string): column name to be summarized
+
+    Returns:
+        int: number of unique values
+    """
+    return df[column_name].nunique()
+
+
+def _op_get_column_data_type(df, column_name):
+    """Return the data type given a dataframe and column name string.
+
+    Args:
+        df (pandas dataframe): input dataframe
+        column_name (string): column name to be analyzed
+
+    Returns:
+        string: data type of the column
+    """
+    if is_string_dtype(df[column_name]):
+        return 'string'
+    elif is_numeric_dtype(df[column_name]):
+        return 'numeric'
+    else:
+        return str(df[column_name].dtype)
