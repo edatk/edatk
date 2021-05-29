@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 
+import edatk._core as core
 import edatk._single_variable._summary_statistics as sst
 import edatk._single_variable._visuals as viz
 
@@ -51,7 +52,8 @@ _auto_eda_column_visuals = {
         'Box Plot': viz._plot_distributions
     },
     'string': {
-        'No visuals for categorical': lambda x, y: None
+        'Count Plot': viz._plot_categorical_counts,
+        'Count Plot %': viz._plot_categorical_percent_counts
     }
 }
 
@@ -92,11 +94,21 @@ def _auto_eda_single_column(df, column_name):
     # Print combined string back to console
     print(result)
 
-    # Run visuals
-    for k, visual in _auto_eda_column_visuals[data_type].items():
-        visual(df, column_name)
-        plt.show()
-        print('\n')
+    # Visual layout
+    visual_dict = _auto_eda_column_visuals[data_type]
+    fig, axs, row_col_dict = core.get_fig_ax(len(visual_dict), 2)
+
+    # Build visuals
+    for i, (k, visual) in enumerate(visual_dict.items()):
+        # Find chart placement
+        row, col = row_col_dict[i]
+        ax = axs[row, col]
+
+        # Plot chart
+        visual(df, column_name, ax)
+
+    plt.show()
+    print('\n')
 
 
 def auto_eda_columns(df, column_list=None):
