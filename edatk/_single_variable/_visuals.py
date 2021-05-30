@@ -49,6 +49,12 @@ def _get_percentage_from_counts(vcounts):
 
 
 def _annotate_bars(ax, colors):
+    """For a bar chart drawn to ax, annotate labels at top of bar with same colors.
+
+    Args:
+        ax (matplotlib ax object): ax object with bars to be annotated
+        colors (list): list of color strings
+    """
     for p, c in zip(ax.patches, colors):
         ax.annotate("%.2f" % p.get_height(), (p.get_x() + p.get_width() / 2., p.get_height()),
                     ha='center', va='center', fontsize=11, color=c, xytext=(0, 20),
@@ -67,7 +73,10 @@ def _plot_distributions(df, column_name, ax):
     # Filter out nas and grab correct column
     filtered_col = df[column_name].dropna()
 
-    sns.boxplot(data=filtered_col, ax=ax).set_title(f'{column_name} Box Plot')
+    # Plot and clean up chart formatting
+    ct = sns.boxplot(x=filtered_col, ax=ax)
+    ct.set_title(f'{column_name} Box Plot')
+    ct.set(xlabel=None)
 
 
 def _plot_categorical_counts(df, column_name, ax):
@@ -126,3 +135,18 @@ def _plot_categorical_percent_counts(df, column_name, ax):
 
     # Add labels
     _annotate_bars(ax, cpalette)
+
+
+def _plot_histogram(df, column_name, ax):
+    """Plot histogram.
+
+    Args:
+        df (pandas dataframe): input dataframe
+        column_name (string): column name to be summarized
+        ax (matplotlib ax object): ax to plot chart on
+    """
+
+    # Plot chart and clean up formatting
+    ct = sns.histplot(data=df.dropna(), x=column_name, kde=True, ax=ax)
+    ct.set_title(f'{column_name} Histogram')
+    ct.set(xlabel=None)
