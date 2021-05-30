@@ -7,7 +7,10 @@ with open("README.md", "r") as readme_file:
 
 requirements = [
     'seaborn>=0.11',
-    'numpy>=1.20'
+    'numpy>=1.20',
+    'matplotlib>=3.4.2',
+    'pandas>=1.2.4',
+    'jinja2>=3.0.1'
 ]
 
 setup(
