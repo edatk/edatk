@@ -15,14 +15,15 @@ requirements = [
 
 setup(
     name="edatk",
-    version="0.0.2",
+    version="0.0.3",
     author="Barrett Studdard",
     author_email="barrettstuddard@gmail.com",
     description="edatk: python exploratory data analysis toolkit",
     long_description=readme,
     long_description_content_type="text/markdown",
     url="https://github.com/edatk/edatk/",
-    packages=['edatk'],
+    packages=['edatk', 'edatk._html_report', 'edatk._single_variable'],
+    package_data={'edatk': ['_html_report/*.html']},
     install_requires=requirements,
     classifiers=[
         "Programming Language :: Python :: 3.9",
