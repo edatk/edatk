@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from pandas.api.types import is_string_dtype, is_numeric_dtype
+from pandas.api.types import is_string_dtype, is_numeric_dtype, is_bool_dtype, is_categorical_dtype
 
 
 def _op_mean(df, column_name):
@@ -117,7 +117,10 @@ def _op_quantile(df, column_name, quantile_value=0.75):
     Returns:
         float: quantile cuttoff point
     """
-    return np.nanquantile(df[column_name],quantile_value)
+    if is_bool_dtype(df[column_name]):
+        return None
+    else:
+        return np.nanquantile(df[column_name],quantile_value)
 
 
 def _op_distinct_count(df, column_name):
@@ -147,5 +150,9 @@ def _op_get_column_data_type(df, column_name):
         return 'string'
     elif is_numeric_dtype(df[column_name]):
         return 'numeric'
+    elif is_categorical_dtype(df[column_name]):
+        return 'string'
+    elif is_bool_dtype(df[column_name]):
+        return 'string'
     else:
         return str(df[column_name].dtype)
