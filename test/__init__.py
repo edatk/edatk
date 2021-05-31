@@ -1,1 +1,1 @@
-from test.test_summary_stats import *
+from test.test_all import *

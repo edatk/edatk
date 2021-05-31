@@ -1,15 +1,17 @@
 import seaborn as sns
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+import pandas as pd
 import math
 
 
-def get_test_dataset():
-    """Temporary placeholder for test dataset, testing suite to be setup at a later date.
+def _check_for_pandas_df(df):
+    """Check that input is a pandas dataframe
 
-    Returns:
-        dataframe: pandas dataframe
+    Args:
+        df (pandas dataframe): object to check instance against
     """
-    return sns.load_dataset('iris')
+    assert isinstance(df, pd.DataFrame), "df must be a pandas dataframe"
 
 
 def _get_fig_size_dynamic(num_plots, columns):
@@ -22,9 +24,9 @@ def _get_fig_size_dynamic(num_plots, columns):
     Returns:
         tuple: calculated x and y size in float format.
     """
-    current_fig_size = plt.rcParams['figure.figsize']
+    current_fig_size = plt.rcParamsDefault['figure.figsize']
     x, y = current_fig_size
-    return x * 2.0, y * num_plots / float(columns)
+    return 11.0, y * num_plots / float(columns)
 
 
 def _get_rows_calc(num_plots, columns):
@@ -61,8 +63,8 @@ def get_fig_ax(total_num_plots, columns=2):
     # Get fig and axs given rows and cols
     sns.set_theme()
     sns.set_style('darkgrid')
-    sns.despine(left=True, bottom=True)
     fig, axs = plt.subplots(rows, columns, squeeze=False, figsize=fig_size_d)
+    sns.despine(left=True, bottom=True) # must be done after fig to avoid printing dims
 
     # For number of charts and dims, generate row col tuples
     row_col_dict = {}
@@ -76,3 +78,21 @@ def get_fig_ax(total_num_plots, columns=2):
         axs[-1,-1].axis('off')
     
     return fig, axs, row_col_dict
+
+
+def _rotate_x_axis_labels(ax):
+    """Rotate the x axis labels slightly to prevent overlapping.
+
+    Args:
+        ax (matplotlib ax object): ax object to have x labels rotated
+    """
+    ax.set_xticklabels(ax.get_xticklabels(),rotation=30)
+
+
+def _integer_y_axis_format(ax):
+    """Force y axis into integer format.
+
+    Args:
+        ax (matplotlib ax object): ax object to force integers on y axis
+    """
+    ax.yaxis.set_major_locator(ticker.MaxNLocator(integer=True))

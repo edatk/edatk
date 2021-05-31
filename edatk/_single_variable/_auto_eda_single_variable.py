@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import edatk._core as core
 import edatk._single_variable._summary_statistics as sst
 import edatk._single_variable._visuals as viz
-import edatk._html_report._report_builder as html_build
 
 def _text_box_plot(df, column_name):
     """Return the text box plot given a dataframe and column name string.
@@ -20,12 +19,16 @@ def _text_box_plot(df, column_name):
     med = sst._op_median(df, column_name)
     sf = sst._op_quantile(df, column_name, 0.75)
     max = sst._op_max(df, column_name)
-    return f'|{min} --||{tf} ~ {med} ~ {sf}||-- {max}|'
+    try:
+        return f'|{min:.2f} --||{tf:.2f} ~ {med:.2f} ~ {sf:.2f}||-- {max:.2f}|'
+    except:
+        return f'|{min} --||{tf} ~ {med} ~ {sf}||-- {max}|'
 
 
 _auto_eda_column_ops = {
     'numeric': {
-        'Data Type': sst._op_get_column_data_type,
+        'Data Type Grouping': sst._op_get_column_data_type,
+        'Data Type': lambda x, y: str(x[y].dtype),
         'Row Count': sst._op_rowcount,
         'Distinct Count': sst._op_distinct_count,
         'Missing Values': sst._op_missing_rows,
@@ -38,13 +41,12 @@ _auto_eda_column_ops = {
         'Text Box Plot': _text_box_plot
     },
     'string': {
-        'Data Type': sst._op_get_column_data_type,
+        'Data Type Grouping': sst._op_get_column_data_type,
+        'Data Type': lambda x, y: str(x[y].dtype),
         'Row Count': sst._op_rowcount,
         'Distinct Count': sst._op_distinct_count,
         'Missing Values': sst._op_missing_rows,
-        'Missing Value %': lambda x, y: float(sst._op_missing_rows(x, y)) / float(sst._op_rowcount(x, y)),
-        'Min': sst._op_min,
-        'Max': sst._op_max
+        'Missing Value %': lambda x, y: float(sst._op_missing_rows(x, y)) / float(sst._op_rowcount(x, y))
     }
 }
 
@@ -60,13 +62,14 @@ _auto_eda_column_visuals = {
 }
 
 
-def _auto_eda_single_column(df, column_name, html_report):
+def _auto_eda_single_column(df, column_name, html_report, show_chart):
     """Print summary statistics and charts given a dataframe and column name string. Ignores NAs besides missing count row.
 
     Args:
         df (pandas dataframe): input dataframe
         column_name (string): column name to be summarized
         html_report (object): html report object to hold data and write to file
+        show_chart (bool): whether to call plt.show, can be useful to disable in command line interactions
     """
 
     # Operation header
@@ -75,9 +78,18 @@ def _auto_eda_single_column(df, column_name, html_report):
     if html_report:
         html_report.save_title(column_name)
 
-    # Determine column data type and summary ops
+    # Determine column data type
     data_type = sst._op_get_column_data_type(df, column_name)
-    column_operations = _auto_eda_column_ops[data_type]
+
+    # Try to find operations to do to summarize data type in question
+    if data_type in _auto_eda_column_ops:
+        column_operations = _auto_eda_column_ops[data_type]
+    else:
+        error_str = f'{column_name} data type ({data_type}) cannot be parsed.'
+        print(error_str)
+        if html_report:
+            html_report.save_text(error_str)
+        return None
 
     # Initiate console and html description string
     result = ''
@@ -90,7 +102,7 @@ def _auto_eda_single_column(df, column_name, html_report):
         op_result = op(df, column_name)
         
         # String format
-        if type(op_result) is str:
+        if isinstance(op_result, str):
             result += f'{k:20}: {op_result}'
             if html_report:
                 table_list_of_dict.append({'metric':k, 'value':op_result})
@@ -99,14 +111,14 @@ def _auto_eda_single_column(df, column_name, html_report):
             result += f'{k:20}: {op_result:.2f}%'
             if html_report:
                 table_list_of_dict.append({'metric':k, 'value':round(op_result,2)})
-        elif type(op_result) is int:
+        elif isinstance(op_result, int):
             result += f'{k:20}: {op_result}'
             if html_report:
                 table_list_of_dict.append({'metric':k, 'value':op_result})
         else:
             result += f'{k:20}: {op_result:.2f}'
             if html_report:
-                table_list_of_dict.append({'metric':k, 'value':round(op_result,2)})
+                table_list_of_dict.append({'metric':k, 'value':op_result})
 
         # New line for next result
         result += '\n'
@@ -134,38 +146,57 @@ def _auto_eda_single_column(df, column_name, html_report):
         html_report.save_chart_to_image(fig, f'single_var_{column_name}')
     
     # Chart to console and offset newline
-    plt.show()
+    if show_chart:
+        plt.show()
+        plt.close('all')
     print('\n')
 
 
-def auto_eda_columns(df, column_list=None, save_path=None):
+def _single_col_ops_error_wrap(df, col, html_report, show_chart):
+    try:
+        _auto_eda_single_column(df, col, html_report, show_chart)
+    except:
+        error_str = f'{col} was not able to be profiled due to errors'
+        print(error_str)
+        if html_report:
+            html_report.save_text(error_str)
+        plt.close('all')
+
+
+def _auto_eda_columns(df, column_list=None, html_report=None, ignore_errors=True, show_chart=True):
     """Print summary statistics and charts given a dataframe and list of column name strings. Ignores NAs besides missing count row.
 
     Args:
         df (pandas dataframe): input dataframe
         column_list (list): list of column names to be summarized
+        html_report (HTMLReport class): html report object to write data to
+        ignore_errors (bool): whether to ignore errors and run what is possible or raise excpetions
+        show_chart (bool): whether to call plt.show, can be useful to disable in command line interactions
     """
-
-    # Initiate html file ops if needed
-    if save_path:
-        html_report = html_build.HTMLReport(save_path)
-    else:
-        html_report = None
 
     # Check if user pased in list
     if column_list: 
         # Single column
-        if type(column_list) is str and column_list in df.columns:
-            _auto_eda_single_column(df, column_list, html_report)
+        if isinstance(column_list, str) and column_list in df.columns:
+            if ignore_errors:
+                _single_col_ops_error_wrap(df, column_list, html_report, show_chart)
+            else:
+                _auto_eda_single_column(df, column_list, html_report, show_chart)
         else:
             # Multiple defined columns
             for col in column_list:
-                _auto_eda_single_column(df, col, html_report)
+                if ignore_errors:
+                    _single_col_ops_error_wrap(df, col, html_report, show_chart)
+                else:
+                    _auto_eda_single_column(df, col, html_report, show_chart)
     else:
         # Run all columns
         for col in df.columns:
-            _auto_eda_single_column(df, col, html_report)
+            if ignore_errors:
+                _single_col_ops_error_wrap(df, col, html_report, show_chart)
+            else:
+                _auto_eda_single_column(df, col, html_report, show_chart)
 
     # Save off final html template
-    if save_path:
+    if html_report:
         html_report.build_final_template()

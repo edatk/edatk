@@ -93,4 +93,4 @@ class HTMLReport:
         write_path = os.path.join(self.root_path, 'report.html')
         with open(write_path, 'w') as f:
             f.write(template)
-        print(f'Report written to {write_path}. Open to view as a webpage.')
+        print(f'Open web view of this report at {write_path}.')

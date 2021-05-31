@@ -7,5 +7,11 @@ edatk is a open source project for exploratory data analysis in Python. This is 
 pip install edatk
 ```
 
+## Running edatk
+```python
+import edatk as eda
+eda.auto_eda(df, save_path='C:\\Users\\username\\Documents\\edatk')
+```
+
 ## Contributing
 If you are interested in contributing, please see the [contributing documentation](/docs/developer/CONTRIBUTING.md).
