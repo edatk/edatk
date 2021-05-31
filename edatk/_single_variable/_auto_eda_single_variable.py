@@ -115,8 +115,12 @@ def _auto_eda_single_column(df, column_name, html_report, show_chart):
             result += f'{k:20}: {op_result}'
             if html_report:
                 table_list_of_dict.append({'metric':k, 'value':op_result})
-        else:
+        elif isinstance(op_result, float):
             result += f'{k:20}: {op_result:.2f}'
+            if html_report:
+                table_list_of_dict.append({'metric':k, 'value':round(op_result,2)})
+        else:
+            result += f'{k:20}: {op_result}'
             if html_report:
                 table_list_of_dict.append({'metric':k, 'value':op_result})
 
