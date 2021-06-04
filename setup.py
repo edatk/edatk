@@ -10,12 +10,13 @@ requirements = [
     'numpy>=1.20',
     'matplotlib>=3.4.2',
     'pandas>=1.2.4',
-    'jinja2>=3.0.1'
+    'jinja2>=3.0.1',
+    'scipy>=1.6.3'
 ]
 
 setup(
     name="edatk",
-    version="0.0.3",
+    version="0.0.4",
     author="Barrett Studdard",
     author_email="barrettstuddard@gmail.com",
     description="edatk: python exploratory data analysis toolkit",

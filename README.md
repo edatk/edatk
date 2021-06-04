@@ -9,7 +9,14 @@ pip install edatk
 
 ## Running edatk
 ```python
+# Import library
 import edatk as eda
+
+# Load in your dataframe (using seaborn below as an example)
+import seaborn as sns
+df = sns.load_dataset('diamonds')
+
+# Run auto eda, pass in path for saving html report
 eda.auto_eda(df, save_path='C:\\Users\\username\\Documents\\edatk')
 ```
 

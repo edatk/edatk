@@ -8,3 +8,4 @@ pytest==6.2.4
 matplotlib==3.4.2
 pandas==1.2.4
 jinja2==3.0.1
+scipy==1.6.3
