@@ -1,3 +1,4 @@
+from matplotlib.pyplot import text
 import seaborn as sns
 import numpy as np
 import pandas as pd
@@ -7,6 +8,7 @@ import math
 
 from edatk._core import _rotate_x_axis_labels, _integer_y_axis_format
 from edatk._single_variable._summary_statistics import _op_missing_rows as na_rows
+from edatk._single_variable._summary_statistics import _get_theoritical_distributions
 
 
 def _split_top_others(s, topn=10, na_row_count=None):
@@ -126,6 +128,38 @@ def _plot_categorical_counts(df, column_name, ax):
     _annotate_bars(ax, cpalette, force_int=True)
 
 
+def _plot_simple_bar(s, title, ax):
+    """Plot simple bars from series.
+
+    Args:
+        s (pandas series): input dataframe
+        title (string): title to add to plot
+        ax (matplotlib ax object): ax to plot chart on
+    """
+
+    # Filter out nas
+    summarized_col = s.dropna()
+
+    # Y axis pad
+    ymax = np.max(summarized_col) * 1.25
+    ax.set_ylim(0, ymax)
+    
+    # Fix x axis labels from overlapping
+    _rotate_x_axis_labels(ax)
+
+    # Calc color pallete
+    cpalette = ['grey' for x in summarized_col]
+    
+    # Plot chart
+    ct = sns.barplot(x=summarized_col.index, y=summarized_col, ax=ax, palette=cpalette)
+    ct.set_title(title)
+    ct.set(xlabel=None)
+    ct.set(ylabel=None)
+
+    # Add labels
+    _annotate_bars(ax, cpalette, force_int=False)
+
+
 def _plot_categorical_percent_counts(df, column_name, ax):
     """Plot bars with count percents of the various values in the column.
 
@@ -171,7 +205,37 @@ def _plot_histogram(df, column_name, ax):
     """
 
     # Plot chart and clean up formatting
-    ct = sns.histplot(data=df.dropna(), x=column_name, kde=True, ax=ax)
+    ct = sns.histplot(data=df[column_name].dropna(), kde=True, ax=ax)
     ct.set_title(f'{column_name} Histogram')
+    ct.set(xlabel=None)
+    ct.set(ylabel=None)
+
+
+def _plot_distribution_overlay(df, column_name, ax, best_only=False):
+    """Plot distribution overlay.
+
+    Args:
+        df (pandas dataframe): input dataframe
+        column_name (string): column name to be summarized
+        ax (matplotlib ax object): ax to plot chart on
+        best_only (bool): whether to plot the best fit only or all distributions
+    """
+
+    # Calculate various lines for distribution
+    all_distributions, rankings = _get_theoritical_distributions(df, column_name)
+
+    # filter to just one if needed
+    if best_only:
+        best_text = rankings['distribution_type'].values[0]
+        best_idx = all_distributions['distribution_type'] == best_text
+        default_idx = all_distributions['distribution_type'] == 'original data'
+        all_distributions = all_distributions[best_idx | default_idx]
+
+    # Plot chart and clean up formatting
+    ct = sns.lineplot(data=all_distributions, x=column_name, y='distribution', hue='distribution_type', ax=ax)
+    if best_only:
+        ct.set_title(f'{column_name} Closest Distribution')
+    else:
+        ct.set_title(f'{column_name} Distribution Overlays')
     ct.set(xlabel=None)
     ct.set(ylabel=None)

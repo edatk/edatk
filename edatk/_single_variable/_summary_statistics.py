@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from pandas.api.types import is_string_dtype, is_numeric_dtype, is_bool_dtype, is_categorical_dtype
-
+import scipy.stats as stats
 
 def _op_mean(df, column_name):
     """Return the numpy mean given a dataframe and column name string. Ignores NAs.
@@ -148,11 +148,74 @@ def _op_get_column_data_type(df, column_name):
     """
     if is_string_dtype(df[column_name]):
         return 'string'
-    elif is_numeric_dtype(df[column_name]):
-        return 'numeric'
-    elif is_categorical_dtype(df[column_name]):
-        return 'string'
     elif is_bool_dtype(df[column_name]):
+        return 'bool'
+    elif is_numeric_dtype(df[column_name]):
+        if _op_distinct_count(df, column_name) <= 10:
+            return 'numeric-condensed'
+        else:
+            return 'numeric'
+    elif is_categorical_dtype(df[column_name]):
         return 'string'
     else:
         return str(df[column_name].dtype)
+
+
+def _get_theoritical_distributions(df, column_name):
+    """Compare frequencies of column against theoritical freqencies to determine best fit distribution.
+
+    Args:
+        df (pandas dataframe): input dataframe
+        column_name (string): column name to be analyzed
+
+    Returns:
+        pandas dataframe: dataframe containing distribtion points
+        pandas dataframe: dataframe containing distribution and rmse, sorted descending 
+    """
+    # Init df concat list to hold distributions
+    df_concat_list = []
+
+    # Get histogram from dataframe
+    y, x = np.histogram(df[column_name].dropna(), bins=20, density=True)
+    midpoints = (x[:-1] + x[1:]) / 2.0
+
+    # Add original distribution to the df concat list
+    y_df = pd.DataFrame(y, columns=['distribution']).set_index(pd.Series(midpoints))
+    y_df['distribution_type'] = 'original data'
+    df_concat_list.append(y_df)
+
+    # Loop through distributions
+    dist_list = ['norm', 'expon', 'uniform', 'lognorm', 't']
+    for dist_name in dist_list:
+
+        # Fit Dist
+        dist = getattr(stats.distributions, dist_name)
+        dist_parms = dist.fit(df[column_name].dropna())
+
+        # Generate pdf from modpoints and distribution parms
+        pdf = dist.pdf(midpoints, *dist_parms)
+
+        # Add results to df concat list
+        df_dist = pd.DataFrame(pdf, columns=['distribution']).set_index(pd.Series(midpoints))
+        df_dist['distribution_type'] = dist_name
+        df_concat_list.append(df_dist)
+
+
+    # Combine into one df
+    all_distributions = pd.concat(df_concat_list).reset_index().rename(columns={'index': column_name})
+
+    # Split data by orig and distributions
+    orig_data_idx = all_distributions['distribution_type'] == 'original data'
+    df_orig_data = all_distributions.loc[orig_data_idx, :]
+    df_other_data = all_distributions.loc[~orig_data_idx]
+
+    # Calculate sse
+    combined_df = pd.merge(df_other_data, df_orig_data, how='left', on=column_name, suffixes=['_dist','_orig'])
+    combined_df['squared_errors'] = (combined_df['distribution_dist'] - combined_df['distribution_orig']) ** 2
+    df_se = pd.DataFrame(combined_df.groupby(['distribution_type_dist'])['squared_errors'].mean().reset_index())
+    df_se['rmse'] = np.sqrt(df_se['squared_errors']) 
+    df_se.drop(['squared_errors'], axis=1, inplace=True)
+    df_se = df_se.rename(columns={'distribution_type_dist': 'distribution_type'})
+    df_se = df_se.sort_values(by='rmse', ascending=True)
+
+    return all_distributions, df_se

@@ -25,8 +25,29 @@ def _text_box_plot(df, column_name):
         return f'|{min} --||{tf} ~ {med} ~ {sf}||-- {max}|'
 
 
+def _dist_rank_wrapper(df, column_name, ax):
+    _, dist_df = sst._get_theoritical_distributions(df, column_name)
+    dist_series = dist_df.set_index('distribution_type')['rmse'].squeeze()
+    if dist_series is not None:
+        viz._plot_simple_bar(dist_series, f"{column_name} Distribution Fit (RMSE of Density Deltas)", ax)
+
+
 _auto_eda_column_ops = {
     'numeric': {
+        'Data Type Grouping': sst._op_get_column_data_type,
+        'Data Type': lambda x, y: str(x[y].dtype),
+        'Row Count': sst._op_rowcount,
+        'Distinct Count': sst._op_distinct_count,
+        'Missing Values': sst._op_missing_rows,
+        'Missing Value %': lambda x, y: float(sst._op_missing_rows(x, y)) / float(sst._op_rowcount(x, y)),
+        'Mean': sst._op_mean,
+        'Median': sst._op_median,
+        'Min': sst._op_min,
+        'Max': sst._op_max,
+        'Standard Deviation': sst._op_standard_deviation,
+        'Text Box Plot': _text_box_plot
+    },
+    'numeric-condensed': {
         'Data Type Grouping': sst._op_get_column_data_type,
         'Data Type': lambda x, y: str(x[y].dtype),
         'Row Count': sst._op_rowcount,
@@ -47,17 +68,34 @@ _auto_eda_column_ops = {
         'Distinct Count': sst._op_distinct_count,
         'Missing Values': sst._op_missing_rows,
         'Missing Value %': lambda x, y: float(sst._op_missing_rows(x, y)) / float(sst._op_rowcount(x, y))
+    },
+    'bool': {
+        'Data Type Grouping': sst._op_get_column_data_type,
+        'Data Type': lambda x, y: str(x[y].dtype),
+        'Row Count': sst._op_rowcount,
+        'Distinct Count': sst._op_distinct_count,
+        'Missing Values': sst._op_missing_rows,
+        'Missing Value %': lambda x, y: float(sst._op_missing_rows(x, y)) / float(sst._op_rowcount(x, y))
     }
 }
 
 _auto_eda_column_visuals = {
     'numeric': {
         'Box Plot': viz._plot_distributions,
-        'Histogram': viz._plot_histogram
+        'Histogram': viz._plot_histogram,
+        'Distributions': viz._plot_distribution_overlay,
+        'Best Distribution': lambda x, y, z: viz._plot_distribution_overlay(x, y, z, best_only=True),
+        'Distribution Fits': _dist_rank_wrapper
+    },
+    'numeric-condensed': {
+        'Histogram': viz._plot_histogram,
     },
     'string': {
         'Count Plot': viz._plot_categorical_counts,
         'Count Plot %': viz._plot_categorical_percent_counts
+    },
+    'bool': {
+        'Histogram': viz._plot_histogram
     }
 }
 
