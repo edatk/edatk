@@ -66,7 +66,7 @@ def test_distinct_count():
 
 def test_data_type():
     assert sst._op_get_column_data_type(_get_test_df(), 'category') == 'string'
-    assert sst._op_get_column_data_type(_get_test_df(), 'metric') == 'numeric'
+    assert sst._op_get_column_data_type(_get_test_df(), 'metric') == 'numeric-condensed'
 
 
 def test_auto_column_text_eda():
