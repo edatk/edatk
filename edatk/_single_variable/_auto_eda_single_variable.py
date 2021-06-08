@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from seaborn.external.docscrape import header
 
 import edatk._core as core
 import edatk._single_variable._summary_statistics as sst
@@ -34,12 +35,13 @@ def _dist_rank_wrapper(df, column_name, ax):
 
 _auto_eda_column_ops = {
     'numeric': {
+        'Column Name': lambda df, column_name: str(column_name),
         'Data Type Grouping': sst._op_get_column_data_type,
-        'Data Type': lambda x, y: str(x[y].dtype),
+        'Data Type': lambda df, column_name: str(df[column_name].dtype),
         'Row Count': sst._op_rowcount,
         'Distinct Count': sst._op_distinct_count,
         'Missing Values': sst._op_missing_rows,
-        'Missing Value %': lambda x, y: float(sst._op_missing_rows(x, y)) / float(sst._op_rowcount(x, y)),
+        'Missing Value %': lambda df, column_name: float(sst._op_missing_rows(df, column_name)) / float(sst._op_rowcount(df, column_name)),
         'Mean': sst._op_mean,
         'Median': sst._op_median,
         'Min': sst._op_min,
@@ -48,12 +50,13 @@ _auto_eda_column_ops = {
         'Text Box Plot': _text_box_plot
     },
     'numeric-condensed': {
+        'Column Name': lambda df, column_name: str(column_name),
         'Data Type Grouping': sst._op_get_column_data_type,
-        'Data Type': lambda x, y: str(x[y].dtype),
+        'Data Type': lambda df, column_name: str(df[column_name].dtype),
         'Row Count': sst._op_rowcount,
         'Distinct Count': sst._op_distinct_count,
         'Missing Values': sst._op_missing_rows,
-        'Missing Value %': lambda x, y: float(sst._op_missing_rows(x, y)) / float(sst._op_rowcount(x, y)),
+        'Missing Value %': lambda df, column_name: float(sst._op_missing_rows(df, column_name)) / float(sst._op_rowcount(df, column_name)),
         'Mean': sst._op_mean,
         'Median': sst._op_median,
         'Min': sst._op_min,
@@ -62,20 +65,22 @@ _auto_eda_column_ops = {
         'Text Box Plot': _text_box_plot
     },
     'string': {
+        'Column Name': lambda df, column_name: str(column_name),
         'Data Type Grouping': sst._op_get_column_data_type,
-        'Data Type': lambda x, y: str(x[y].dtype),
+        'Data Type': lambda df, column_name: str(df[column_name].dtype),
         'Row Count': sst._op_rowcount,
         'Distinct Count': sst._op_distinct_count,
         'Missing Values': sst._op_missing_rows,
-        'Missing Value %': lambda x, y: float(sst._op_missing_rows(x, y)) / float(sst._op_rowcount(x, y))
+        'Missing Value %': lambda df, column_name: float(sst._op_missing_rows(df, column_name)) / float(sst._op_rowcount(df, column_name))
     },
     'bool': {
+        'Column Name': lambda df, column_name: str(column_name),
         'Data Type Grouping': sst._op_get_column_data_type,
-        'Data Type': lambda x, y: str(x[y].dtype),
+        'Data Type': lambda df, column_name: str(df[column_name].dtype),
         'Row Count': sst._op_rowcount,
         'Distinct Count': sst._op_distinct_count,
         'Missing Values': sst._op_missing_rows,
-        'Missing Value %': lambda x, y: float(sst._op_missing_rows(x, y)) / float(sst._op_rowcount(x, y))
+        'Missing Value %': lambda df, column_name: float(sst._op_missing_rows(df, column_name)) / float(sst._op_rowcount(df, column_name))
     }
 }
 
@@ -84,7 +89,7 @@ _auto_eda_column_visuals = {
         'Box Plot': viz._plot_distributions,
         'Histogram': viz._plot_histogram,
         'Distributions': viz._plot_distribution_overlay,
-        'Best Distribution': lambda x, y, z: viz._plot_distribution_overlay(x, y, z, best_only=True),
+        'Best Distribution': lambda df, column_name, ax: viz._plot_distribution_overlay(df, column_name, ax, best_only=True),
         'Distribution Fits': _dist_rank_wrapper
     },
     'numeric-condensed': {
@@ -109,12 +114,8 @@ def _auto_eda_single_column(df, column_name, html_report, show_chart):
         html_report (object): html report object to hold data and write to file
         show_chart (bool): whether to call plt.show, can be useful to disable in command line interactions
     """
-
-    # Operation header
-    header_text = f'========== {column_name} =========='
-    print(header_text)
-    if html_report:
-        html_report.save_title(column_name)
+    # Used for separating portions of html doc
+    section = 'single_variable'
 
     # Determine column data type
     data_type = sst._op_get_column_data_type(df, column_name)
@@ -126,82 +127,26 @@ def _auto_eda_single_column(df, column_name, html_report, show_chart):
         error_str = f'{column_name} data type ({data_type}) cannot be parsed.'
         print(error_str)
         if html_report:
-            html_report.save_text(error_str)
+            html_report.save_text(error_str, section=section)
         return None
 
-    # Initiate console and html description string
-    result = ''
-    if html_report:
-        table_list_of_dict = []
-        table_list_of_dict.append({'metric':'Column Name', 'value':column_name})
-    
-    for k, op in column_operations.items():
-        # Execute op
-        op_result = op(df, column_name)
-        
-        # String format
-        if isinstance(op_result, str):
-            result += f'{k:20}: {op_result}'
-            if html_report:
-                table_list_of_dict.append({'metric':k, 'value':op_result})
-        elif k[-1:] == '%':
-            op_result *= 100.0
-            result += f'{k:20}: {op_result:.2f}%'
-            if html_report:
-                table_list_of_dict.append({'metric':k, 'value':round(op_result,2)})
-        elif isinstance(op_result, int):
-            result += f'{k:20}: {op_result}'
-            if html_report:
-                table_list_of_dict.append({'metric':k, 'value':op_result})
-        elif isinstance(op_result, float):
-            result += f'{k:20}: {op_result:.2f}'
-            if html_report:
-                table_list_of_dict.append({'metric':k, 'value':round(op_result,2)})
-        else:
-            result += f'{k:20}: {op_result}'
-            if html_report:
-                table_list_of_dict.append({'metric':k, 'value':op_result})
-
-        # New line for next result
-        result += '\n'
-    
-    # Print combined string back to console (and save to file if needed)
-    print(result)
-    if html_report:
-        html_report.save_table(table_list_of_dict)
+    # Run metric table
+    core._bind_to_console_html(section='single_variable', run_type='table', run_dict=column_operations, html_report=html_report, show_chart=show_chart, header_text=column_name, df=df, column_name=column_name)
 
     # Visual layout
     visual_dict = _auto_eda_column_visuals[data_type]
-    fig, axs, row_col_dict = core.get_fig_ax(len(visual_dict), 2)
-
-    # Build visuals
-    for i, (k, visual) in enumerate(visual_dict.items()):
-        # Find chart placement
-        row, col = row_col_dict[i]
-        ax = axs[row, col]
-
-        # Plot chart
-        visual(df, column_name, ax)
-
-    # Save figure if needed
-    if html_report:
-        html_report.save_chart_to_image(fig, f'single_var_{column_name}')
-    
-    # Chart to console and offset newline
-    if show_chart:
-        plt.show()
-        plt.close('all')
-    print('\n')
+    core._bind_to_console_html('single_variable', 'charts', visual_dict, html_report, show_chart=show_chart, df=df, column_name=column_name)
 
 
 def _single_col_ops_error_wrap(df, col, html_report, show_chart):
+    section = 'single_variable'
     try:
         _auto_eda_single_column(df, col, html_report, show_chart)
     except:
         error_str = f'{col} was not able to be profiled due to errors'
         print(error_str)
         if html_report:
-            html_report.save_text(error_str)
+            html_report.save_text(error_str, section=section)
         plt.close('all')
 
 
@@ -238,7 +183,3 @@ def _auto_eda_columns(df, column_list=None, html_report=None, ignore_errors=True
                 _single_col_ops_error_wrap(df, col, html_report, show_chart)
             else:
                 _auto_eda_single_column(df, col, html_report, show_chart)
-
-    # Save off final html template
-    if html_report:
-        html_report.build_final_template()
