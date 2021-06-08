@@ -46,6 +46,40 @@
                         {% endif %} 
                     {% endfor %}
                 </div>
+
+                <h2 class="has-text-weight-semibold has-background-primary has-text-white has-text-centered">Multi Column Statistics</h2>
+                <div>
+                    {% for comp in multi_variable_charts %}
+                        {% if comp['render_type'] == 'png' %}
+                            <img src="assets/{{ comp['render_value'] }}">
+                        {% elif comp['render_type'] == 'title' %}
+                            <h3 class="has-text-weight-medium has-text-info has-background-light">{{ comp['render_value'] }}</h3>
+                        {% elif comp['render_type'] == 'text' %}
+                            <p>{{ comp['render_value']|safe }}</p>
+                        {% elif comp['render_type'] == 'table' %}
+                            <table class="table is-narrow mb-2 mt-2">
+                                <thead>
+                                    <tr>
+                                        <th>Metric</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in comp['render_value'] %}
+                                        <tr>
+                                            <td>{{ row['metric'] }}</td>
+                                            <td>{{ row['value'] }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% elif comp['render_type'] == 'lb' %}
+                            <div class="mb-6"></div>
+                        {% else %}
+                            <p>{{ comp['render_value'] }}</p>
+                        {% endif %} 
+                    {% endfor %}
+                </div>
             </div>
         </section>
     </body>

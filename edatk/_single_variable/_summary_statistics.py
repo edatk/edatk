@@ -172,11 +172,15 @@ def _get_theoritical_distributions(df, column_name):
         pandas dataframe: dataframe containing distribtion points
         pandas dataframe: dataframe containing distribution and rmse, sorted descending 
     """
-    # Init df concat list to hold distributions
+    # Init df concat list to hold distributions and remove NAs from column
     df_concat_list = []
+    col_wo_nas = df[column_name].dropna()
+
+    # Calculate the number of bins using numpy defaults
+    num_bins = len(np.histogram_bin_edges(np.array(col_wo_nas), bins='auto'))
 
     # Get histogram from dataframe
-    y, x = np.histogram(df[column_name].dropna(), bins=20, density=True)
+    y, x = np.histogram(col_wo_nas, bins=num_bins, density=True)
     midpoints = (x[:-1] + x[1:]) / 2.0
 
     # Add original distribution to the df concat list
@@ -190,7 +194,7 @@ def _get_theoritical_distributions(df, column_name):
 
         # Fit Dist
         dist = getattr(stats.distributions, dist_name)
-        dist_parms = dist.fit(df[column_name].dropna())
+        dist_parms = dist.fit(col_wo_nas)
 
         # Generate pdf from modpoints and distribution parms
         pdf = dist.pdf(midpoints, *dist_parms)
