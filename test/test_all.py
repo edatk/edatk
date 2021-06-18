@@ -10,11 +10,16 @@ warnings.filterwarnings("ignore", message="FixedFormatter should only be used to
 import edatk._single_variable._summary_statistics as sst
 from edatk._auto_eda import auto_eda
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> main
 def _get_sns_test_datasets(small_list=True):
     if small_list:
         return [sns.load_dataset('iris'), sns.load_dataset('diamonds'), sns.load_dataset('titanic')]
     else:
         return [sns.load_dataset(ds_name) for ds_name in sns.get_dataset_names()]
+
 
 def _get_test_df():
     SAMPLE_LIST = [5.1,4.9,4.7,4.6,5.0, None]
@@ -70,21 +75,12 @@ def test_data_type():
 
 
 def test_auto_column_text_eda():
-    try:
-        auto_eda(_get_test_df())
-    except Exception as e:
-        pytest.fail(f'Unexpected error...')
-    try:
-        auto_eda(_get_test_df(), 'metric')
-    except Exception as e:
-        pytest.fail(f'Unexpected error...')
-    try:
-        auto_eda(_get_test_df(), ['metric', 'category'])
-    except Exception as e:
-        pytest.fail(f'Unexpected error...')
+    df = _get_test_df()
+    auto_eda(df)
 
 
 def test_sns_datasets():
     ds_list = _get_sns_test_datasets()
-    for ds in ds_list:
+    for i, ds in enumerate(ds_list):
+        print(f'Running dataset {i}')
         auto_eda(ds, ignore_errors=False, show_chart=False)

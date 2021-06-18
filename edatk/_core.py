@@ -66,6 +66,7 @@ def get_fig_ax(total_num_plots, columns=2):
     sns.set_style('darkgrid')
     fig, axs = plt.subplots(rows, columns, squeeze=False, figsize=fig_size_d)
     sns.despine(left=True, bottom=True) # must be done after fig to avoid printing dims
+    plt.tight_layout(pad=5.0)
 
     # For number of charts and dims, generate row col tuples
     row_col_dict = {}
