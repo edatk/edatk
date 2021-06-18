@@ -23,7 +23,7 @@ setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     url="https://github.com/edatk/edatk/",
-    packages=['edatk', 'edatk._html_report', 'edatk._single_variable'],
+    packages=['edatk', 'edatk._html_report', 'edatk._single_variable', 'edatk._multi_variable'],
     package_data={'edatk': ['_html_report/*.html']},
     install_requires=requirements,
     classifiers=[
