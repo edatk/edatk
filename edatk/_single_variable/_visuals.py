@@ -111,7 +111,10 @@ def _plot_categorical_counts(df, column_name, ax):
 
     # Change y axis to integer format and pad
     ymax = math.ceil(np.max(summarized_col) * 1.25)
-    ax.set_ylim(0, ymax)
+    ymin = math.floor(np.min(summarized_col))
+    if ymin > 0.0:
+        ymin = 0
+    ax.set_ylim(ymin, ymax)
     _integer_y_axis_format(ax)
     
     # Fix x axis labels from overlapping
@@ -141,7 +144,10 @@ def _plot_simple_bar(s, title, ax):
 
     # Y axis pad
     ymax = np.max(summarized_col) * 1.25
-    ax.set_ylim(0, ymax)
+    ymin = math.floor(np.min(summarized_col))
+    if ymin > 0.0:
+        ymin = 0
+    ax.set_ylim(ymin, ymax)
     
     # Fix x axis labels from overlapping
     _rotate_x_axis_labels(ax)
@@ -179,7 +185,10 @@ def _plot_categorical_percent_counts(df, column_name, ax):
 
     # Pad y axis
     ymax = math.ceil(np.max(summarized_col) * 1.25)
-    ax.set_ylim(0, ymax)
+    ymin = math.floor(np.min(summarized_col))
+    if ymin > 0.0:
+        ymin = 0
+    ax.set_ylim(ymin, ymax)
     
     # Fix x axis labels from overlapping
     _rotate_x_axis_labels(ax)

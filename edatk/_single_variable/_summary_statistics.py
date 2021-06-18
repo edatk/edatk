@@ -152,6 +152,9 @@ def _op_get_column_data_type(df, column_name):
         return 'bool'
     elif is_numeric_dtype(df[column_name]):
         if _op_distinct_count(df, column_name) <= 10:
+            if _op_distinct_count(df, column_name) == 2:
+                if _op_min(df, column_name) == 0 and _op_max(df, column_name) == 1:
+                    return 'bool'
             return 'numeric-condensed'
         else:
             return 'numeric'
