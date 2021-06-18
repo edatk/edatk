@@ -10,7 +10,10 @@ warnings.filterwarnings("ignore", message="FixedFormatter should only be used to
 import edatk._single_variable._summary_statistics as sst
 from edatk._auto_eda import auto_eda
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 def _get_sns_test_datasets(small_list=True):
     if small_list:
         return [sns.load_dataset('iris'), sns.load_dataset('diamonds'), sns.load_dataset('titanic')]
