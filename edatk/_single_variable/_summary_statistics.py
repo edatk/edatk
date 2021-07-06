@@ -136,6 +136,32 @@ def _op_distinct_count(df, column_name):
     return df[column_name].nunique()
 
 
+def _op_skew(df, column_name):
+    """Return the scipy skew given a dataframe and column name string. Ignores NAs.
+
+    Args:
+        df (pandas dataframe): input dataframe
+        column_name (string): column name to be summarized
+
+    Returns:
+        float: skew
+    """
+    return stats.skew(df[column_name])
+
+
+def _op_kurtosis(df, column_name):
+    """Return the scipy kurtosis given a dataframe and column name string. Ignores NAs.
+
+    Args:
+        df (pandas dataframe): input dataframe
+        column_name (string): column name to be summarized
+
+    Returns:
+        float: kurtosis
+    """
+    return stats.kurtosis(df[column_name])
+
+
 def _op_get_column_data_type(df, column_name):
     """Return the data type given a dataframe and column name string.
 

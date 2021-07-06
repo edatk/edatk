@@ -56,7 +56,11 @@ def get_fig_ax(total_num_plots, columns=2):
     """
 
     # Rows and columns from plot count
-    rows = _get_rows_calc(total_num_plots, columns)
+    if total_num_plots > 1:
+        rows = _get_rows_calc(total_num_plots, columns)
+    else:
+        rows = 1
+        columns = 1
 
     # Figsize override
     fig_size_d = _get_fig_size_dynamic(rows * columns, columns)
@@ -75,8 +79,8 @@ def get_fig_ax(total_num_plots, columns=2):
         column = int(i % columns)
         row_col_dict[i] = (row, column)
 
-    # Turn off last axis if odd number
-    if total_num_plots % columns != 0:
+    # Turn off last axis if odd number and > 1
+    if (total_num_plots % columns != 0) and (total_num_plots > 1):
         axs[-1,-1].axis('off')
     
     return fig, axs, row_col_dict
@@ -149,7 +153,7 @@ def _bind_to_console_html(section, run_type, run_dict, html_report, show_chart=T
             elif k[-1:] == '%':
                 op_result *= 100.0
                 if html_report:
-                    table_list_of_dict.append({'metric':k, 'value':round(op_result,2)})
+                    table_list_of_dict.append({'metric':k, 'value':f'{round(op_result,2)}%'})
                 else:
                     result += f'{k:20}: {op_result:.2f}%'
             elif isinstance(op_result, int):
@@ -179,7 +183,7 @@ def _bind_to_console_html(section, run_type, run_dict, html_report, show_chart=T
             print(result)
 
 
-    elif run_type == 'charts':
+    elif run_type in['chart', 'charts']:
        
         # Visual layout
         fig, axs, row_col_dict = get_fig_ax(len(run_dict), 2)
@@ -193,7 +197,7 @@ def _bind_to_console_html(section, run_type, run_dict, html_report, show_chart=T
             # Plot chart
             visual(**kwargs, ax=ax)
 
-    elif run_type == 'chart':
+    elif run_type == 'chartx':
 
         # Single chart bind to fig
         for i, (k, visual) in enumerate(run_dict.items()):

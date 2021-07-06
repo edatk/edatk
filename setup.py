@@ -16,7 +16,7 @@ requirements = [
 
 setup(
     name="edatk",
-    version="0.0.5",
+    version="0.0.6",
     author="Barrett Studdard",
     author_email="barrettstuddard@gmail.com",
     description="edatk: python exploratory data analysis toolkit",

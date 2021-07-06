@@ -47,6 +47,9 @@ _auto_eda_column_ops = {
         'Min': sst._op_min,
         'Max': sst._op_max,
         'Standard Deviation': sst._op_standard_deviation,
+        'CV %': lambda df, column_name: float(sst._op_standard_deviation(df, column_name)) / float(sst._op_mean(df, column_name)),
+        'Skew': sst._op_skew,
+        'Kurtosis': sst._op_kurtosis,
         'Text Box Plot': _text_box_plot
     },
     'numeric-condensed': {
@@ -62,6 +65,9 @@ _auto_eda_column_ops = {
         'Min': sst._op_min,
         'Max': sst._op_max,
         'Standard Deviation': sst._op_standard_deviation,
+        'CV %': lambda df, column_name: float(sst._op_standard_deviation(df, column_name)) / float(sst._op_mean(df, column_name)),
+        'Skew': sst._op_skew,
+        'Kurtosis': sst._op_kurtosis,
         'Text Box Plot': _text_box_plot
     },
     'string': {
@@ -88,6 +94,8 @@ _auto_eda_column_visuals = {
     'numeric': {
         'Box Plot': viz._plot_distributions,
         'Histogram': viz._plot_histogram,
+        'Swarm': viz._plot_swarm,
+        'ECDF': viz._plot_ecdf,
         'Distributions': viz._plot_distribution_overlay,
         'Best Distribution': lambda df, column_name, ax: viz._plot_distribution_overlay(df, column_name, ax, best_only=True),
         'Distribution Fits': _dist_rank_wrapper
@@ -162,7 +170,7 @@ def _auto_eda_columns(df, column_list=None, html_report=None, ignore_errors=True
     """
 
     # Check if user pased in list
-    if column_list: 
+    if column_list is not None: 
         # Single column
         if isinstance(column_list, str) and column_list in df.columns:
             if ignore_errors:
