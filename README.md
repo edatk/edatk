@@ -22,17 +22,17 @@ eda.auto_eda(df, save_path='C:\\Users\\username\\Documents\\edatk')
 
 ## Feature Overview
 
-> Feature [status]
+> Feature [**status**]
 
-- Column by column analysis [partial]
-    - Basic descriptive statistics (mean, median, min, max, etc) [completed]
-    - Distribution charts (numeric) and most frequent values (categorical) [partial]
-    - Normality Tests and additional metrics (skew, kurtosis) [partial]
-- Relationships between columns
-    - Pair grid [partial]
-    - Correlation heatmap [planned]
-- Basic feature -> target analysis and feature importance [planned]
-- Autofind interesting relationships and features [planned]
+- Column by column analysis [**partial**]
+    - Basic descriptive statistics (mean, median, min, max, etc) [**completed**]
+    - Distribution charts (numeric) and most frequent values (categorical) [**completed**]
+    - Normality Tests [**planned**].
+- Relationships between columns [**completed**]
+- Basic feature -> target analysis and feature importance [**planned**]
+- Autofind interesting relationships and features [**planned**]
+- Operation timeouts [**planned**]
+- Time Series Data Types [**planned**]
 
 
 ## Contributing

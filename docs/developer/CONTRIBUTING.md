@@ -59,3 +59,11 @@
     git push origin my_changes
     ```
 1. Go to your github repo in your browser and submit a pull request describing your changes. Leave your branch open until merged. After that point, you are free to fetch to resync if you're working on additional changes, delete your personal forked repo, etc.
+
+1. If you need to do a hard reset to your local and forked repo (origin), you can follow these steps (keep in mind changes will be wiped out).
+    ```
+    git checkout main
+    git fetch upstream
+    git reset --hard upstream/main
+    git push origin main --force
+    ```

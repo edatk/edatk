@@ -247,3 +247,43 @@ def _plot_distribution_overlay(df, column_name, ax, best_only=False):
         ct.set_title(f'{column_name} Distribution Overlays')
     ct.set(xlabel=None)
     ct.set(ylabel=None)
+
+
+def _plot_ecdf(df, column_name, ax):
+    """Plot ecdf.
+
+    Args:
+        df (pandas dataframe): input dataframe
+        column_name (string): column name to be summarized
+        ax (matplotlib ax object): ax to plot chart on
+    """
+    ct = sns.ecdfplot(data=df[column_name].dropna(), ax=ax)
+    ct.set_title(f'{column_name} ECDF')
+    ct.set(xlabel=None)
+    ct.set(ylabel=None)
+
+
+def _plot_swarm(df, column_name, ax):
+    """Plot swarmplot.
+
+    Args:
+        df (pandas dataframe): input dataframe
+        column_name (string): column name to be summarized
+        ax (matplotlib ax object): ax to plot chart on
+    """
+    # Sampling
+    s = df[column_name].dropna()
+    max_sample = 1000
+    if len(s) <= max_sample:
+        max_sample = len(df)
+        sample_string = ''
+        t=s
+    else:
+        t = s.sample(n=max_sample, random_state=42)
+        sample_string = f' {max_sample} max sample'
+
+    # Plot chart and clean up formatting
+    ct = sns.swarmplot(y=t, ax=ax)
+    ct.set_title(f'{column_name} Swarmplot{sample_string}')
+    ct.set(xlabel=None)
+    ct.set(ylabel=None)
