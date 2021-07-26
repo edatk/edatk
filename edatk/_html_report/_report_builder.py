@@ -1,5 +1,6 @@
 import pathlib
 import os
+from typing import Optional
 import webbrowser
 import glob
 from edatk._html_report._template_ops import _build_template
@@ -7,7 +8,7 @@ from edatk._html_report._template_ops import _build_template
 class HTMLReport:
     """Class for capturing html details and rendering + saving file.
     """
-    def __init__(self, save_path=None):
+    def __init__(self, save_path: Optional[str] = None):
         """Create new instance of HTML Report
 
         Args:
@@ -18,7 +19,7 @@ class HTMLReport:
         self._multi_variable_charts = []
 
 
-    def _create_report_directory(self, save_path, remove_old_files=True):
+    def _create_report_directory(self, save_path: str, remove_old_files: bool = True):
         """Create report repository at path
 
         Args:
@@ -49,7 +50,7 @@ class HTMLReport:
                 os.remove(file)
 
 
-    def save_title(self, title, section):
+    def save_title(self, title: str, section: str):
         """Save title to html rendering.
 
         Args:
@@ -63,7 +64,7 @@ class HTMLReport:
             self._multi_variable_charts.append({'render_type':'title', 'render_value': title})
         
 
-    def save_text(self, text, section):
+    def save_text(self, text: str, section: str):
         """Save text to html rendering.
 
         Args:
@@ -77,7 +78,7 @@ class HTMLReport:
             self._multi_variable_charts.append({'render_type':'text', 'render_value': text})
 
 
-    def save_chart_to_image(self, fig, chart_name, section):
+    def save_chart_to_image(self, fig: object, chart_name: str, section: str):
         """Save chart to html rendering.
 
         Args:
@@ -99,7 +100,7 @@ class HTMLReport:
             self._multi_variable_charts.append({'render_type': 'lb', 'render_value': 'None'})
 
 
-    def save_table(self, table_list_of_dict, section):
+    def save_table(self, table_list_of_dict: list[dict], section: str):
         """Save table to html rendering.
 
         Args:
@@ -112,7 +113,7 @@ class HTMLReport:
             self._multi_variable_charts.append({'render_type':'table', 'render_value': table_list_of_dict})
 
     
-    def build_final_template(self, open_template=True):
+    def build_final_template(self, open_template: bool = True):
         """Build final template and write to file
 
         Args:

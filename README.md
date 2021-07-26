@@ -14,26 +14,32 @@ import edatk as eda
 
 # Load in your dataframe (using seaborn below as an example)
 import seaborn as sns
-df = sns.load_dataset('diamonds')
+df = sns.load_dataset('iris')
 
-# Run auto eda, pass in path for saving html report
-eda.auto_eda(df, save_path='C:\\Users\\username\\Documents\\edatk')
+# Run auto eda, optionally pass in path for saving html report and target column
+eda.auto_eda(df, save_path='C:\\Users\\username\\Documents\\edatk', target_column='species')
 ```
 
 ## Feature Overview
 
 > Feature [**status**]
-
-- Column by column analysis [**partial**]
-    - Basic descriptive statistics (mean, median, min, max, etc) [**completed**]
-    - Distribution charts (numeric) and most frequent values (categorical) [**completed**]
-    - Normality Tests [**planned**].
-- Relationships between columns [**completed**]
-- Basic feature -> target analysis and feature importance [**planned**]
-- Autofind interesting relationships and features [**planned**]
-- Operation timeouts [**planned**]
-- Time Series Data Types [**planned**]
-
+- Tabular data [**partial**]
+    - Column by column analysis [**partial**]
+        - Basic descriptive statistics (mean, median, min, max, etc) [**completed**]
+        - Distribution charts (numeric) and most frequent values (categorical) [**completed**]
+        - Normality Tests [**planned**].
+    - Relationships between columns [**completed**]
+    - TSNE [**planned**]
+    - Basic feature -> target analysis and feature importance [**planned**]
+    - Autofind interesting relationships and features [**planned**]
+    - Basic exploratory NLP for text columns [**planned**]
+- Exploring Predicted vs. True Results [**planned**]
+    - Classification Results Plots
+        - True vs. Predicted Heatmap by Class
+        - Mosiac Plot
+- Time Series [**planned**]
+- Performance Improvements [**planned**]
+    - Operation timeouts
 
 ## Contributing
 If you are interested in contributing, please see the [contributing documentation](/docs/developer/CONTRIBUTING.md).

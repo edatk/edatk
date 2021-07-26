@@ -1,6 +1,10 @@
 import pytest
 import pandas as pd
+import numpy as np
 import seaborn as sns
+from sklearn.metrics import mean_absolute_error
+from sklearn.linear_model import LinearRegression
+
 
 import warnings
 warnings.filterwarnings("ignore", module = "matplotlib\..*" )
@@ -9,6 +13,7 @@ warnings.filterwarnings("ignore", message="FixedFormatter should only be used to
 
 import edatk._single_variable._summary_statistics as sst
 from edatk._auto_eda import auto_eda
+from edatk._modeling._cross_val_custom import cross_validate_custom
 
 
 def _get_sns_test_datasets(small_list=True):
@@ -69,6 +74,16 @@ def test_distinct_count():
 def test_data_type():
     assert sst._op_get_column_data_type(_get_test_df(), 'category') == 'string'
     assert sst._op_get_column_data_type(_get_test_df(), 'metric') == 'numeric-condensed'
+
+
+def test_cv():
+    df = sns.load_dataset('diamonds')
+    y = df.pop('price')
+    X = df.loc[:, ['carat','depth']]
+    scorer2 = mean_absolute_error
+    model2 = LinearRegression()
+
+    assert round(np.mean(cross_validate_custom(X, y, model2, scorer2)), 2) == 1005.25
 
 
 def test_auto_column_text_eda():

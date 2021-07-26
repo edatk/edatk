@@ -1,11 +1,17 @@
 from itertools import combinations
+from typing import Callable, Optional
+import pandas as pd
 from pandas.api.types import is_numeric_dtype
 
 import edatk._core as core
 import edatk._multi_variable._visuals as viz
 
 
-def _get_column_combinations(df, column_list=None, target_column=None):
+def _get_column_combinations(
+        df: pd.DataFrame, 
+        column_list: Optional[list[str]] = None, 
+        target_column: Optional[str] = None
+    ) -> list[tuple[str, str]]:
     """Given a dataframe, get a list of column combinations in tuples
 
     Args:
@@ -36,7 +42,7 @@ def _get_column_combinations(df, column_list=None, target_column=None):
     return final_list
 
 
-def _bind_chart_function(arg_func, **kwargs):
+def _bind_chart_function(arg_func: Callable, **kwargs):
     """For a given set of two columns, wrap those columns as parms into the plot relationship function
 
     Args:
@@ -51,7 +57,14 @@ def _bind_chart_function(arg_func, **kwargs):
     return inner_func
 
 
-def _auto_eda_mutli_variable(df, column_list=None, target_column=None, html_report=None, ignore_errors=True, show_chart=True):
+def _auto_eda_mutli_variable(
+        df: pd.DataFrame, 
+        column_list: Optional[list[str]] = None, 
+        target_column: Optional[str] = None, 
+        html_report: object = None, 
+        ignore_errors: bool = True, 
+        show_chart: bool = True
+    ):
     _relationship_ops = {}
     _heatmap_ops = {}
     

@@ -1,14 +1,16 @@
+import pandas as pd
+
 import edatk._single_variable._summary_statistics as sst
 
 
-def _top_value_or_other(x, top_value_list):
+def _top_value_or_other(x: str, top_value_list: list[str]) -> str:
     if x in top_value_list:
         return x
     else:
         return 'Other'
 
 
-def _range_classifier(x, low, high, column_name):
+def _range_classifier(x: float, low: float, high: float, column_name: str) -> str:
     if x < low:
         return f'low ({column_name}<{float(round(low,2))})'
     elif x < high:
@@ -17,7 +19,12 @@ def _range_classifier(x, low, high, column_name):
         return f'high ({column_name}>{float(round(high,2))})'
 
 
-def _get_column_reduced_cardinality(df, column_name, cardinality, desired_cardinality):
+def _get_column_reduced_cardinality(
+        df: pd.DataFrame, 
+        column_name: str, 
+        cardinality: int, 
+        desired_cardinality: int
+    ) -> pd.Series:
     """Return a series that is the reduced cardinality version of a supplied df[column_name]
 
     Args:
@@ -55,7 +62,7 @@ def _get_column_reduced_cardinality(df, column_name, cardinality, desired_cardin
         return reduced_cardinality_series
 
 
-def _add_low_cardinality_target_column(df, target_column, desired_cardinality):
+def _add_low_cardinality_target_column(df: pd.DataFrame, target_column: str, desired_cardinality: int):
     """Add an additional low cardinality derived column in place.
 
     Args:

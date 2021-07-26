@@ -1,4 +1,5 @@
 import math
+from typing import Optional
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -7,7 +8,13 @@ from seaborn.palettes import color_palette
 from edatk._single_variable._summary_statistics import _op_get_column_data_type, _op_distinct_count
 
 
-def _plot_relationship(df, column_name_one, column_name_two, ax, target_column=None):
+def _plot_relationship(
+        df: pd.DataFrame, 
+        column_name_one: str, 
+        column_name_two: str, 
+        ax: object, 
+        target_column: Optional[str] = None
+    ):
     """Plot relationship columns given df and two column names
 
     Args:
@@ -157,7 +164,12 @@ def _plot_relationship(df, column_name_one, column_name_two, ax, target_column=N
             sns.countplot(data=df2, y='combinations', hue=hue_color_column, hue_order=hue_order, order=sort_order, ax=ax)
 
 
-def _plot_heatmap(df, ax, column_list=None, target_column=None):
+def _plot_heatmap(
+        df: pd.DataFrame, 
+        ax: object, 
+        column_list: Optional[list[str]] = None, 
+        target_column: Optional[str]=None
+    ):
     """Plot a heatmap of columns. If target passed, then one col heatmap.
 
     Args:
