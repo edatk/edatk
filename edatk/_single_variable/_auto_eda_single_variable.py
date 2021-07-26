@@ -1,15 +1,16 @@
+from typing import Optional
 import matplotlib.pyplot as plt
-from seaborn.external.docscrape import header
+import pandas as pd
 
 import edatk._core as core
 import edatk._single_variable._summary_statistics as sst
 import edatk._single_variable._visuals as viz
 
-def _text_box_plot(df, column_name):
+def _text_box_plot(df: pd.DataFrame, column_name: str) -> str:
     """Return the text box plot given a dataframe and column name string.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be analyzed
 
     Returns:
@@ -26,7 +27,7 @@ def _text_box_plot(df, column_name):
         return f'|{min} --||{tf} ~ {med} ~ {sf}||-- {max}|'
 
 
-def _dist_rank_wrapper(df, column_name, ax):
+def _dist_rank_wrapper(df: pd.DataFrame, column_name: str, ax: object):
     _, dist_df = sst._get_theoritical_distributions(df, column_name)
     dist_series = dist_df.set_index('distribution_type')['rmse'].squeeze()
     if dist_series is not None:
@@ -113,11 +114,16 @@ _auto_eda_column_visuals = {
 }
 
 
-def _auto_eda_single_column(df, column_name, html_report, show_chart):
+def _auto_eda_single_column(
+        df: pd.DataFrame, 
+        column_name: str, 
+        html_report: object, 
+        show_chart: bool
+    ):
     """Print summary statistics and charts given a dataframe and column name string. Ignores NAs besides missing count row.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
         html_report (object): html report object to hold data and write to file
         show_chart (bool): whether to call plt.show, can be useful to disable in command line interactions
@@ -158,7 +164,12 @@ def _single_col_ops_error_wrap(df, col, html_report, show_chart):
         plt.close('all')
 
 
-def _auto_eda_columns(df, column_list=None, html_report=None, ignore_errors=True, show_chart=True):
+def _auto_eda_columns(
+        df: pd.DataFrame, 
+        column_list: Optional[str] = None, 
+        html_report: Optional[str] = None, 
+        ignore_errors: bool = True, 
+        show_chart: bool = True):
     """Print summary statistics and charts given a dataframe and list of column name strings. Ignores NAs besides missing count row.
 
     Args:

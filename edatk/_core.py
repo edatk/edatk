@@ -1,3 +1,4 @@
+from typing import Callable
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
@@ -6,7 +7,7 @@ import math
 from datetime import datetime
 
 
-def _check_for_pandas_df(df):
+def _check_for_pandas_df(df: pd.DataFrame):
     """Check that input is a pandas dataframe
 
     Args:
@@ -15,7 +16,7 @@ def _check_for_pandas_df(df):
     assert isinstance(df, pd.DataFrame), "df must be a pandas dataframe"
 
 
-def _get_fig_size_dynamic(num_plots, columns):
+def _get_fig_size_dynamic(num_plots: int, columns: int) -> tuple[float, float]:
     """Calculate x and y figure size based on plots and columns.
 
     Args:
@@ -30,7 +31,7 @@ def _get_fig_size_dynamic(num_plots, columns):
     return 11.0, y * num_plots / float(columns)
 
 
-def _get_rows_calc(num_plots, columns):
+def _get_rows_calc(num_plots: int, columns: int) -> int:
     """Calculate number of rows for subplots given total plots and columns.
 
     Args:
@@ -44,7 +45,7 @@ def _get_rows_calc(num_plots, columns):
     return rows
 
 
-def get_fig_ax(total_num_plots, columns=2):
+def get_fig_ax(total_num_plots: int, columns: int = 2) -> tuple[object, object, dict]:
     """Get fig, axs, and row/column dict given total plots and number of columns.
 
     Args:
@@ -86,7 +87,7 @@ def get_fig_ax(total_num_plots, columns=2):
     return fig, axs, row_col_dict
 
 
-def _rotate_x_axis_labels(ax):
+def _rotate_x_axis_labels(ax: object):
     """Rotate the x axis labels slightly to prevent overlapping.
 
     Args:
@@ -95,7 +96,7 @@ def _rotate_x_axis_labels(ax):
     ax.set_xticklabels(ax.get_xticklabels(),rotation=30)
 
 
-def _integer_y_axis_format(ax):
+def _integer_y_axis_format(ax: object):
     """Force y axis into integer format.
 
     Args:
@@ -104,7 +105,15 @@ def _integer_y_axis_format(ax):
     ax.yaxis.set_major_locator(ticker.MaxNLocator(integer=True))
 
 
-def _bind_to_console_html(section, run_type, run_dict, html_report, show_chart=True, header_text=None, **kwargs):
+def _bind_to_console_html(
+        section: str, 
+        run_type: str, 
+        run_dict: dict[str, Callable], 
+        html_report: object, 
+        show_chart: bool = True, 
+        header_text: str = None, 
+        **kwargs
+    ):
     """Bind result of a run dict to consule or html
 
     Args:

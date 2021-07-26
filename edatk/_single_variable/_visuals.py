@@ -1,3 +1,4 @@
+from typing import Optional
 import seaborn as sns
 import numpy as np
 import pandas as pd
@@ -10,7 +11,7 @@ from edatk._single_variable._summary_statistics import _op_missing_rows as na_ro
 from edatk._single_variable._summary_statistics import _get_theoritical_distributions
 
 
-def _split_top_others(s, topn=10, na_row_count=None):
+def _split_top_others(s: pd.Series, topn: int = 10, na_row_count: Optional[int] = None) -> pd.Series:
     """Split a pandas series by topn and others value counts.
 
     Args:
@@ -47,7 +48,7 @@ def _split_top_others(s, topn=10, na_row_count=None):
     return pd.concat([top_values, other_value_series, missing_value_series])
 
 
-def _get_percentage_from_counts(vcounts):
+def _get_percentage_from_counts(vcounts: pd.Series) -> pd.Series:
     """Given value counts, get the corresponding percentages.
 
     Args:
@@ -59,7 +60,7 @@ def _get_percentage_from_counts(vcounts):
     return vcounts / np.sum(vcounts)
 
 
-def _annotate_bars(ax, colors, force_int=False):
+def _annotate_bars(ax: object, colors: list[str], force_int: bool = False):
     """For a bar chart drawn to ax, annotate labels at top of bar with same colors.
 
     Args:
@@ -77,11 +78,11 @@ def _annotate_bars(ax, colors, force_int=False):
                     textcoords='offset points')
 
 
-def _plot_distributions(df, column_name, ax):
+def _plot_distributions(df: pd.DataFrame, column_name: str, ax: object):
     """Return boxplot ax given a dataframe and column name string. Ignores NAs.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
         ax (matplotlib ax object): ax to plot chart on
     """
@@ -95,11 +96,11 @@ def _plot_distributions(df, column_name, ax):
         ct.set(xlabel=None)
 
 
-def _plot_categorical_counts(df, column_name, ax):
+def _plot_categorical_counts(df: pd.DataFrame, column_name: str, ax: object):
     """Plot bars with counts of the various values in the column.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
         ax (matplotlib ax object): ax to plot chart on
     """
@@ -130,11 +131,11 @@ def _plot_categorical_counts(df, column_name, ax):
     _annotate_bars(ax, cpalette, force_int=True)
 
 
-def _plot_simple_bar(s, title, ax):
+def _plot_simple_bar(s: pd.Series, title: str, ax: object):
     """Plot simple bars from series.
 
     Args:
-        s (pandas series): input dataframe
+        s (pd.Series): input dataframe
         title (string): title to add to plot
         ax (matplotlib ax object): ax to plot chart on
     """
@@ -165,11 +166,11 @@ def _plot_simple_bar(s, title, ax):
     _annotate_bars(ax, cpalette, force_int=False)
 
 
-def _plot_categorical_percent_counts(df, column_name, ax):
+def _plot_categorical_percent_counts(df: pd.DataFrame, column_name: str, ax: object):
     """Plot bars with count percents of the various values in the column.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
         ax (matplotlib ax object): ax to plot chart on
     """
@@ -203,11 +204,11 @@ def _plot_categorical_percent_counts(df, column_name, ax):
     _annotate_bars(ax, cpalette)
 
 
-def _plot_histogram(df, column_name, ax):
+def _plot_histogram(df: pd.DataFrame, column_name: str, ax: object):
     """Plot histogram.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
         ax (matplotlib ax object): ax to plot chart on
     """
@@ -219,11 +220,11 @@ def _plot_histogram(df, column_name, ax):
     ct.set(ylabel=None)
 
 
-def _plot_distribution_overlay(df, column_name, ax, best_only=False):
+def _plot_distribution_overlay(df: pd.DataFrame, column_name: str, ax: object, best_only: bool = False):
     """Plot distribution overlay.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
         ax (matplotlib ax object): ax to plot chart on
         best_only (bool): whether to plot the best fit only or all distributions
@@ -249,11 +250,11 @@ def _plot_distribution_overlay(df, column_name, ax, best_only=False):
     ct.set(ylabel=None)
 
 
-def _plot_ecdf(df, column_name, ax):
+def _plot_ecdf(df: pd.DataFrame, column_name: str, ax: object):
     """Plot ecdf.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
         ax (matplotlib ax object): ax to plot chart on
     """
@@ -263,11 +264,11 @@ def _plot_ecdf(df, column_name, ax):
     ct.set(ylabel=None)
 
 
-def _plot_swarm(df, column_name, ax):
+def _plot_swarm(df: pd.DataFrame, column_name: str, ax: object):
     """Plot swarmplot.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
         ax (matplotlib ax object): ax to plot chart on
     """

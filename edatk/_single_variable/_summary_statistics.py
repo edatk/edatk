@@ -3,11 +3,11 @@ import pandas as pd
 from pandas.api.types import is_string_dtype, is_numeric_dtype, is_bool_dtype, is_categorical_dtype
 import scipy.stats as stats
 
-def _op_mean(df, column_name):
+def _op_mean(df: pd.DataFrame, column_name: str) -> float:
     """Return the numpy mean given a dataframe and column name string. Ignores NAs.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
 
     Returns:
@@ -16,11 +16,11 @@ def _op_mean(df, column_name):
     return np.nanmean(df[column_name])
 
 
-def _op_median(df, column_name):
+def _op_median(df: pd.DataFrame, column_name: str) -> float:
     """Return the numpy median given a dataframe and column name string. Ignores NAs.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
 
     Returns:
@@ -29,11 +29,11 @@ def _op_median(df, column_name):
     return np.nanmedian(df[column_name])
 
 
-def _op_rowcount(df, column_name):
+def _op_rowcount(df: pd.DataFrame, column_name: str) -> int:
     """Return the numpy row shape given a dataframe and column name string.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
 
     Returns:
@@ -42,11 +42,11 @@ def _op_rowcount(df, column_name):
     return np.array(df[column_name]).shape[0]
 
 
-def _op_min(df, column_name):
+def _op_min(df: pd.DataFrame, column_name: str) -> float:
     """Return the numpy min given a dataframe and column name string. Ignores NAs.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
 
     Returns:
@@ -55,11 +55,11 @@ def _op_min(df, column_name):
     return np.nanmin(df[column_name])
 
 
-def _op_max(df, column_name):
+def _op_max(df: pd.DataFrame, column_name: str) -> float:
     """Return the numpy max given a dataframe and column name string. Ignores NAs.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
 
     Returns:
@@ -68,11 +68,11 @@ def _op_max(df, column_name):
     return np.nanmax(df[column_name])
 
 
-def _op_variance(df, column_name):
+def _op_variance(df: pd.DataFrame, column_name: str) -> float:
     """Return the numpy varaiance given a dataframe and column name string. Ignores NAs.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
 
     Returns:
@@ -81,11 +81,11 @@ def _op_variance(df, column_name):
     return np.nanvar(df[column_name])
 
 
-def _op_standard_deviation(df, column_name):
+def _op_standard_deviation(df: pd.DataFrame, column_name: str) -> float:
     """Return the numpy standard deviation given a dataframe and column name string. Ignores NAs.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
 
     Returns:
@@ -94,11 +94,11 @@ def _op_standard_deviation(df, column_name):
     return np.nanstd(df[column_name])
 
 
-def _op_missing_rows(df, column_name):
+def _op_missing_rows(df: pd.DataFrame, column_name: str) -> int:
     """Return the pandas NA values given a dataframe and column name string.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
 
     Returns:
@@ -107,11 +107,11 @@ def _op_missing_rows(df, column_name):
     return int(np.sum(pd.isna(df[column_name])))
 
 
-def _op_quantile(df, column_name, quantile_value=0.75):
+def _op_quantile(df: pd.DataFrame, column_name: str, quantile_value: float = 0.75) -> float:
     """Return the quantile (0 to 1 percentile) values given a dataframe and column name string. Ignores NAs.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
 
     Returns:
@@ -123,11 +123,11 @@ def _op_quantile(df, column_name, quantile_value=0.75):
         return np.nanquantile(df[column_name],quantile_value)
 
 
-def _op_distinct_count(df, column_name):
+def _op_distinct_count(df: pd.DataFrame, column_name: str) -> int:
     """Return the distinct count given a dataframe and column name string. Ignores NAs.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
 
     Returns:
@@ -136,11 +136,11 @@ def _op_distinct_count(df, column_name):
     return df[column_name].nunique()
 
 
-def _op_skew(df, column_name):
+def _op_skew(df: pd.DataFrame, column_name: str) -> float:
     """Return the scipy skew given a dataframe and column name string. Ignores NAs.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
 
     Returns:
@@ -149,11 +149,11 @@ def _op_skew(df, column_name):
     return stats.skew(df[column_name])
 
 
-def _op_kurtosis(df, column_name):
+def _op_kurtosis(df: pd.DataFrame, column_name: str) -> float:
     """Return the scipy kurtosis given a dataframe and column name string. Ignores NAs.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be summarized
 
     Returns:
@@ -162,11 +162,11 @@ def _op_kurtosis(df, column_name):
     return stats.kurtosis(df[column_name])
 
 
-def _op_get_column_data_type(df, column_name):
+def _op_get_column_data_type(df: pd.DataFrame, column_name: str) -> str:
     """Return the data type given a dataframe and column name string.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be analyzed
 
     Returns:
@@ -190,16 +190,16 @@ def _op_get_column_data_type(df, column_name):
         return str(df[column_name].dtype)
 
 
-def _get_theoritical_distributions(df, column_name):
+def _get_theoritical_distributions(df: pd.DataFrame, column_name: str) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Compare frequencies of column against theoritical freqencies to determine best fit distribution.
 
     Args:
-        df (pandas dataframe): input dataframe
+        df (pd.DataFrame): input dataframe
         column_name (string): column name to be analyzed
 
     Returns:
-        pandas dataframe: dataframe containing distribtion points
-        pandas dataframe: dataframe containing distribution and rmse, sorted descending 
+        pd.DataFrame: dataframe containing distribtion points
+        pd.DataFrame: dataframe containing distribution and rmse, sorted descending 
     """
     # Init df concat list to hold distributions and remove NAs from column
     df_concat_list = []

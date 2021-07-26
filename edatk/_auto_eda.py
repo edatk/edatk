@@ -1,3 +1,6 @@
+import pandas as pd
+from typing import Optional
+
 from edatk._single_variable._auto_eda_single_variable import _auto_eda_columns
 from edatk._multi_variable._auto_eda_multi_variable import _auto_eda_mutli_variable
 from edatk._single_variable._cardinality_reduction import _add_low_cardinality_target_column
@@ -5,14 +8,21 @@ from edatk._core import _check_for_pandas_df
 import edatk._html_report._report_builder as html_build
 
 
-def auto_eda(df, column_list=None, target_column=None, target_low_cardinality_visuals=3, save_path=None, ignore_errors=True, show_chart=True):
+def auto_eda(
+        df: pd.DataFrame, 
+        column_list: Optional[list[str]] = None, 
+        target_column: Optional[str] = None, 
+        target_low_cardinality_visuals: int = 3, 
+        save_path: Optional[str] = None, 
+        ignore_errors: bool = True, 
+        show_chart: bool = True):
     """Run auto eda on a dataframe
 
     Args:
         df (pd.DataFrame): input dataframe
         column_list (list, optional): List of columns, if none runs for all. Defaults to None.
         target_column (str, optional): Column name string of target. If none runs pair plots for all, otherwise runs only against target. Defaults to None.
-        target_low_cardinality_visuals (int, optional): Cardinality of additional target column (if specified) to be added to visualizations where appropriate. Defaults to 3.
+        target_low_cardinality_visuals (int): Cardinality of additional target column (if specified) to be added to visualizations where appropriate. Defaults to 3.
         save_path (str, optional): Directory to save html report to. If none then results printed to console instead. Defaults to None.
         ignore_errors (bool, optional): Ignores errors and runs as much as possible. Defaults to True.
         show_chart (bool, optional): Display charts, likely always want this as True unless testing or working with very large datasets. Defaults to True.

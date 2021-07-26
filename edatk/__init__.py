@@ -6,10 +6,14 @@ warnings.filterwarnings("ignore", message="Converting input from bool to <class 
 
 from ._core import get_fig_ax
 from ._auto_eda import auto_eda
+from ._modeling._cross_val_custom import cross_validate_custom
+
 
 __all__ = [
     "auto_eda",
-    "get_fig_ax"
+    "get_fig_ax",
+    "cross_validate_custom"
 ]
 
-__version__ = '0.0.6'
+
+__version__ = '0.0.7'
